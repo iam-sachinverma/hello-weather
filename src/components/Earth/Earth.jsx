@@ -84,13 +84,13 @@ const MyThreeJSComponent = ({ location }) => {
     }
 
     // Coordinates
-    const parisLatitude = location.lat || 20.5937;
-    const parisLongitude = location.lon || 78.9629;
+    const locLatitude = location?.lat || 20.5937;
+    const locLongitude = location?.lon || 78.9629;
     const markerRadius = 0.7;
 
     const markerPosition = latLongToVector3(
-      parisLatitude,
-      parisLongitude,
+      locLatitude,
+      locLongitude,
       markerRadius
     );
 
@@ -100,8 +100,10 @@ const MyThreeJSComponent = ({ location }) => {
     markerMesh.position.copy(markerPosition);
     scene.add(markerMesh);
 
-    // Set camera lookAt the marker's position
-    camera.lookAt(markerPosition);
+    const cameraPosition = latLongToVector3(locLatitude, locLongitude, 2);
+
+    camera.position.copy(cameraPosition);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     const animate = () => {
       requestAnimationFrame(animate);

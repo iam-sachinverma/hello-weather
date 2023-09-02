@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense } from "react";
 
 import { useWeatherContext } from "../../context/WeatherContext";
 
 import WeatherCard from "../../components/Cards/WeatherCard";
 import WeatherCardLeft from "../../components/Cards/WeatherCardLeft";
 import WeatherCardRight from "../../components/Cards/WeatherCardRight";
+
+const MyThreeJSComponent = React.lazy(() =>
+  import("../../components/Earth/Earth")
+);
 
 const PageHome = () => {
   const { weatherData, userLocation } = useWeatherContext();
@@ -16,7 +20,11 @@ const PageHome = () => {
         <WeatherCard data={weatherData} />
         <WeatherCardLeft data={weatherData} />
         <WeatherCardRight data={weatherData} />
-        <div className="hourly-weather-forecast-section"></div>
+        <div className="hourly-weather-forecast-section">
+          <Suspense fallback={<div>Loading Earth...</div>}>
+            <MyThreeJSComponent />
+          </Suspense>
+        </div>
       </div>
     </>
   );

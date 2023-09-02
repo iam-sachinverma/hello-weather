@@ -13,6 +13,7 @@ const API_KEY = "d2e080f60c01434b9a92c3d37932169f";
 export const WeatherProvider = ({ children }) => {
   const [weatherData, setWeatherData] = useState(null);
   const [query, setQuery] = useState(null);
+  const [rateLimitExceeded, setRateLimitExceeded] = useState(false);
 
   const getUserLocation = async () => {
     const successCallback = async (position) => {
@@ -54,6 +55,11 @@ export const WeatherProvider = ({ children }) => {
 
         const response = await fetch(API_URL);
 
+        if (response.status === 429) {
+          setRateLimitExceeded(true);
+          throw new Error("Rate limit exceeded. Please try again later.");
+        }
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error(
@@ -86,7 +92,9 @@ export const WeatherProvider = ({ children }) => {
   }, [query]);
 
   return (
-    <WeatherContext.Provider value={{ weatherData, query, setQuery }}>
+    <WeatherContext.Provider
+      value={{ weatherData, query, setQuery, rateLimitExceeded }}
+    >
       {children}
     </WeatherContext.Provider>
   );

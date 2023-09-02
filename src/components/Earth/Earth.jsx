@@ -108,14 +108,13 @@ const MyThreeJSComponent = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "75vh",
       }}
     >
       <canvas
         id="c"
         style={{
-          maxWidth: "1000px",
-          maxHeight: "500px",
+          maxWidth: "800px",
+          maxHeight: "400px",
         }}
       />
     </div>

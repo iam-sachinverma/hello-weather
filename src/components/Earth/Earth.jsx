@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import Texture1 from "../../img/texture/earthmap1k.jpg";
 import Texture2 from "../../img/texture/earthbump.jpg";
@@ -11,6 +12,8 @@ const MyThreeJSComponent = () => {
   let renderer;
   let earthmesh;
   let cloudmesh;
+  let markerMesh;
+  let controls;
 
   useEffect(() => {
     const canvas = document.querySelector("#c");
@@ -30,10 +33,13 @@ const MyThreeJSComponent = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.rotateSpeed = 0.5;
+
     renderer.autoClear = false;
     renderer.setClearColor(0x00000, 0.0);
 
-    // create earthgeometry
     const earthgeometry = new THREE.SphereGeometry(0.6, 32, 32);
 
     const earthmaterial = new THREE.MeshPhongMaterial({
@@ -45,21 +51,15 @@ const MyThreeJSComponent = () => {
     });
 
     earthmesh = new THREE.Mesh(earthgeometry, earthmaterial);
-
     scene.add(earthmesh);
 
-    // set ambientlight
     const ambientlight = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(ambientlight);
 
-    // set point light
     const pointerlight = new THREE.PointLight(0xffffff, 0.9);
-
-    // set light position
     pointerlight.position.set(5, 3, 5);
     scene.add(pointerlight);
 
-    // cloud
     const cloudgeometry = new THREE.SphereGeometry(0.63, 32, 32);
 
     const cloudmaterial = new THREE.MeshPhongMaterial({
@@ -68,14 +68,44 @@ const MyThreeJSComponent = () => {
     });
 
     cloudmesh = new THREE.Mesh(cloudgeometry, cloudmaterial);
-
     scene.add(cloudmesh);
+
+    // Function to calculate 3D position from latitude and longitude
+    function latLongToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+
+      const x = -radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.cos(phi);
+      const z = radius * Math.sin(phi) * Math.sin(theta);
+
+      return new THREE.Vector3(x, y, z);
+    }
+
+    // Coordinates
+    const parisLatitude = 20.5937;
+    const parisLongitude = 78.9629;
+    const markerRadius = 0.7;
+
+    const markerPosition = latLongToVector3(
+      parisLatitude,
+      parisLongitude,
+      markerRadius
+    );
+
+    const markerGeometry = new THREE.SphereGeometry(0.02, 32, 32);
+    const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    markerMesh = new THREE.Mesh(markerGeometry, markerMaterial);
+    markerMesh.position.copy(markerPosition);
+    scene.add(markerMesh);
+
+    // Set camera lookAt the marker's position
+    camera.lookAt(markerPosition);
 
     const animate = () => {
       requestAnimationFrame(animate);
-      earthmesh.rotation.y -= 0.0015;
-      cloudmesh.rotation.y += 0.0015;
 
+      controls.update();
       render();
     };
 
@@ -85,19 +115,18 @@ const MyThreeJSComponent = () => {
 
     animate();
 
-    // Cleanup Three.js objects on unmount
     return () => {
-      // Remove the Earth and cloud meshes from the scene
       scene.remove(earthmesh);
       scene.remove(cloudmesh);
+      scene.remove(markerMesh);
 
-      // Dispose of their geometry and materials to release resources
       earthmesh.geometry.dispose();
       earthmesh.material.dispose();
       cloudmesh.geometry.dispose();
       cloudmesh.material.dispose();
+      markerMesh.geometry.dispose();
+      markerMesh.material.dispose();
 
-      // Dispose of the renderer and its resources
       renderer.dispose();
     };
   }, []);

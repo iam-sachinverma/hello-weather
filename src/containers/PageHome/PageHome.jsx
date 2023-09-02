@@ -21,7 +21,11 @@ const PageHome = () => {
         <WeatherCardLeft data={weatherData} />
         <WeatherCardRight data={weatherData} />
         <div className="hourly-weather-forecast-section">
-          <Suspense fallback={<div>Loading Earth...</div>}>
+          <Suspense
+            fallback={
+              <div className="dynamic-data loading">...loading earth</div>
+            }
+          >
             <MyThreeJSComponent />
           </Suspense>
         </div>

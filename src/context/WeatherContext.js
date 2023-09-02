@@ -11,7 +11,7 @@ const API_KEY = "d2e080f60c01434b9a92c3d37932169f";
 
 export const WeatherProvider = ({ children }) => {
   const [weatherData, setWeatherData] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
+  const [query, setQuery] = useState(null);
 
   const getUserLocation = async () => {
     const successCallback = async (position) => {
@@ -19,11 +19,12 @@ export const WeatherProvider = ({ children }) => {
         lat: position.coords.latitude,
         lon: position.coords.longitude,
       };
-      setUserLocation(data);
+      setQuery(data);
     };
 
     const errorCallback = (error) => {
-      setUserLocation("India");
+      console.log(error);
+      setQuery("Delhi");
     };
 
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
@@ -36,10 +37,10 @@ export const WeatherProvider = ({ children }) => {
   useEffect(() => {
     let API_URL;
 
-    if (userLocation?.lat && userLocation?.lon) {
-      API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${userLocation?.lat}&lon=${userLocation?.lon}&appid=${API_KEY}&units=metric`;
+    if (query?.lat && query?.lon) {
+      API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${query?.lat}&lon=${query?.lon}&appid=${API_KEY}&units=metric`;
     } else {
-      API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${"Bangalore"}&appid=${API_KEY}&units=metric`;
+      API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${API_KEY}&units=metric`;
     }
 
     const fetchData = async () => {
@@ -70,10 +71,10 @@ export const WeatherProvider = ({ children }) => {
     };
 
     fetchData();
-  }, [userLocation]);
+  }, [query]);
 
   return (
-    <WeatherContext.Provider value={{ weatherData, userLocation }}>
+    <WeatherContext.Provider value={{ weatherData, query, setQuery }}>
       {children}
     </WeatherContext.Provider>
   );

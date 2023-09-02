@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { useRefs } from "../../context/RefContext";
+import { useWeatherContext } from "../../context/WeatherContext";
 
 const Header = () => {
-  const { searchBoxInputRef } = useRefs();
+  const [searchValue, setSearchValue] = useState("");
+  const { query, setQuery } = useWeatherContext();
+
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    if (e.key === "Enter") {
+      await setQuery(searchValue);
+    }
+  };
 
   return (
     <div className="header">
@@ -66,10 +78,11 @@ const Header = () => {
         </div>
         <input
           className="search-box-input"
-          ref={searchBoxInputRef}
           placeholder="New Delhi"
           type="text"
           tabindex="1"
+          onChange={handleSearchChange}
+          onKeyUp={handleSearchSubmit}
         />
         {/* <div className="gps-button" tabindex="2">
           <svg

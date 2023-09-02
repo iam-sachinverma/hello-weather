@@ -26,7 +26,7 @@ const PageHome = () => {
               <div className="dynamic-data loading">...loading earth</div>
             }
           >
-            <MyThreeJSComponent />
+            <MyThreeJSComponent location={userLocation} />
           </Suspense>
         </div>
       </div>

@@ -6,7 +6,8 @@ import Texture1 from "../../img/texture/earthmap1k.jpg";
 import Texture2 from "../../img/texture/earthbump.jpg";
 import Texture3 from "../../img/texture/earthCloud.png";
 
-const MyThreeJSComponent = () => {
+const MyThreeJSComponent = ({ location }) => {
+  console.log("Earth", location);
   let scene;
   let camera;
   let renderer;
@@ -83,8 +84,8 @@ const MyThreeJSComponent = () => {
     }
 
     // Coordinates
-    const parisLatitude = 20.5937;
-    const parisLongitude = 78.9629;
+    const parisLatitude = location.lat || 20.5937;
+    const parisLongitude = location.lon || 78.9629;
     const markerRadius = 0.7;
 
     const markerPosition = latLongToVector3(

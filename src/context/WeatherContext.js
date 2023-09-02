@@ -13,6 +13,7 @@ const API_KEY = "d2e080f60c01434b9a92c3d37932169f";
 export const WeatherProvider = ({ children }) => {
   const [weatherData, setWeatherData] = useState(null);
   const [query, setQuery] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [rateLimitExceeded, setRateLimitExceeded] = useState(false);
 
   const getUserLocation = async () => {
@@ -21,11 +22,17 @@ export const WeatherProvider = ({ children }) => {
         lat: position.coords.latitude,
         lon: position.coords.longitude,
       };
+      setUserLocation(data);
       setQuery(data);
     };
 
     const errorCallback = (error) => {
       console.log(error);
+      const data = {
+        lat: 28.7041,
+        lon: 77.1025,
+      };
+      setUserLocation(data);
       setQuery("Delhi");
     };
 
@@ -93,7 +100,7 @@ export const WeatherProvider = ({ children }) => {
 
   return (
     <WeatherContext.Provider
-      value={{ weatherData, query, setQuery, rateLimitExceeded }}
+      value={{ weatherData, query, setQuery, userLocation, rateLimitExceeded }}
     >
       {children}
     </WeatherContext.Provider>

@@ -3,17 +3,17 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles/main.scss";
 import reportWebVitals from "./reportWebVitals";
-import { RefProvider } from "./context/RefContext";
 import { WeatherProvider } from "./context/WeatherContext";
+import ErrorBoundary from "./components/Error/ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RefProvider>
+    <ErrorBoundary fallback="There was an error">
       <WeatherProvider>
         <App />
       </WeatherProvider>
-    </RefProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

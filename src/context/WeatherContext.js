@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { startLoadingState, endLoadingState } from "../utils/setLoadingState";
+import { handleError } from "../utils/handleError.js";
 
 const WeatherContext = createContext();
 
@@ -35,6 +36,10 @@ export const WeatherProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (!query) {
+      return;
+    }
+
     let API_URL;
 
     if (query?.lat && query?.lon) {
@@ -66,7 +71,14 @@ export const WeatherProvider = ({ children }) => {
 
         await endLoadingState();
       } catch (error) {
-        console.error(error.message);
+        if (error.message === "Failed to fetch") {
+          await handleError(
+            "Uh oh! It looks like you're not connected to the internet. Please check your connection and try again.",
+            "Refresh Page"
+          );
+        } else {
+          await handleError(error.message, "Try Again");
+        }
       }
     };
 

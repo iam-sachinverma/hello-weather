@@ -1,27 +1,17 @@
 import { roundDegree, formatDate, capitalize } from "../../utils/convertUnits";
 
-import { useRefs } from "../../context/RefContext";
-
 const WeatherCard = ({ data }) => {
-  const { dynamicDataRef } = useRefs();
-
+  console.log(data);
   return (
     <div className="current-weather-card">
       <img
         className="current-weather-icon dynamic-data loading"
-        ref={(el) => dynamicDataRef.current.push(el)}
         src={`/img/animated/${data?.weather[0].icon}.svg`}
       />
-      <div
-        className="current-weather-temperature dynamic-data loading"
-        ref={(el) => dynamicDataRef.current.push(el)}
-      >
+      <div className="current-weather-temperature dynamic-data loading">
         {roundDegree(data?.main.temp)}
       </div>
-      <div
-        className="current-weather-description dynamic-data loading"
-        ref={(el) => dynamicDataRef.current.push(el)}
-      >
+      <div className="current-weather-description dynamic-data loading">
         {capitalize(data?.weather[0]?.description)}
       </div>
       <div className="divider"></div>
@@ -44,10 +34,7 @@ const WeatherCard = ({ data }) => {
             stroke-width="1.5"
           />
         </svg>
-        <div
-          className="current-location dynamic-data loading"
-          ref={(el) => dynamicDataRef.current.push(el)}
-        >
+        <div className="current-location dynamic-data loading">
           {data?.name}
         </div>
       </div>
@@ -68,10 +55,7 @@ const WeatherCard = ({ data }) => {
             fill="#0F172A"
           />
         </svg>
-        <div
-          className="current-date dynamic-data loading"
-          ref={(el) => dynamicDataRef.current.push(el)}
-        >
+        <div className="current-date dynamic-data loading">
           {formatDate(data?.dt)}
         </div>
       </div>

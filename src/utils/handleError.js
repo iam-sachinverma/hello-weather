@@ -1,5 +1,4 @@
 import { endLoadingState } from "./setLoadingState.js";
-import { themeIcons } from "./themeIcons.js";
 
 export const handleError = async (error, event) => {
   const body = document.querySelector("body");
@@ -12,13 +11,14 @@ export const handleError = async (error, event) => {
   alert.classList.add("alert");
 
   alertIcon.classList.add("alert-icon");
-  alertIcon.innerHTML = themeIcons.alert;
 
   alertMessage.classList.add("alert-message");
-  alertMessage.innerHTML = error;
+  const messageTextNode = document.createTextNode(error);
+  alertMessage.appendChild(messageTextNode);
 
   alertButton.classList.add("alert-button");
-  alertButton.innerHTML = event;
+  const buttonTextNode = document.createTextNode(event);
+  alertButton.appendChild(buttonTextNode);
 
   alert.appendChild(alertIcon);
   alert.appendChild(alertMessage);
